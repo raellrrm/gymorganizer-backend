@@ -1,0 +1,2 @@
+INSERT INTO plano (nome) VALUES ("Mensal")
+INSERT INTO usuario (nome, sobrenome, data_nascimento, telefone, email, cpf, plano_id, data_criacao) VALUES ("Israel", "Rodrigues", "2005-02-20", "61983740961", "rael@gmail.com", "01130097129", 1, utc_timestamp)
