@@ -4,9 +4,11 @@ import br.com.gymorganizer.domain.exception.CpfEmUsoException;
 import br.com.gymorganizer.domain.exception.CpfNaoEncontradoException;
 import br.com.gymorganizer.domain.exception.EmailEmUsoException;
 import br.com.gymorganizer.domain.exception.UsuarioNaoEncontradoException;
+import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
+import br.com.gymorganizer.domain.repository.PagamentoRepository;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class CadastroUsuarioService {
 
     @Autowired
     CadastroPlanoService cadastroPlanoService;
+
+    @Autowired
+    PagamentoRepository pagamentoRepository;
 
     public Usuario salvar(Usuario usuario) {
         usuario = verificarEmailECpf(usuario);

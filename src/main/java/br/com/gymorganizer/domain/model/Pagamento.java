@@ -1,0 +1,29 @@
+package br.com.gymorganizer.domain.model;
+
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Data
+@Entity
+public class Pagamento {
+
+    @EqualsAndHashCode.Include
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    private Long id;
+
+    @Column(name = "data_pagamento", nullable = false)
+    private LocalDateTime dataPagamento;
+
+    @Column(name = "valor_pago", nullable = false)
+    private BigDecimal valorPago;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+}

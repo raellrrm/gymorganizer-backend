@@ -1,6 +1,7 @@
 package br.com.gymorganizer.domain.model;
 
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -47,4 +49,8 @@ public class Usuario {
     @ManyToOne
     @JoinColumn(name = "plano_id", nullable = false)
     private Plano plano;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuario")
+    private List<Pagamento> pagamentos;
 }

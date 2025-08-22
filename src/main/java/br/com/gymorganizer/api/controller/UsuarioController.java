@@ -1,5 +1,6 @@
 package br.com.gymorganizer.api.controller;
 
+import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
