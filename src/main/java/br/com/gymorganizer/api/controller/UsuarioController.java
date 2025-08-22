@@ -3,6 +3,7 @@ package br.com.gymorganizer.api.controller;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
+import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
 
 import org.springframework.beans.BeanUtils;
@@ -24,6 +25,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CadastroPagamentoService cadastroPagamentoService;
 
     /**
      * GET /usuarios
@@ -60,6 +64,17 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario adicionar(@RequestBody Usuario usuario) {
         return cadastroUsuarioService.salvar(usuario);
+    }
+
+    /**
+     * POST /usuarios/{usuarioId/pagamentos}
+     * Cria um novo pagamento.
+     */
+
+    @PostMapping("/{usuarioId}/pagamentos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Pagamento efetuarPagamento(@RequestBody Pagamento pagamento, @PathVariable Long usuarioId) {
+        return cadastroPagamentoService.pagar(pagamento, usuarioId);
     }
 
     /**
