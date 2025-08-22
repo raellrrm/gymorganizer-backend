@@ -28,8 +28,11 @@ public class Plano {
     private BigDecimal valor;
 
     @CreationTimestamp
-    @Column(name = "data_criacao")
+    @Column(nullable = false, name = "data_criacao")
     private LocalDateTime dataCriacao;
+
+    @Column(nullable = false, name = "duracao_em_dias")
+    private Integer duracaoEmDias;
 
     @JsonIgnore
     @OneToMany(mappedBy = "plano")

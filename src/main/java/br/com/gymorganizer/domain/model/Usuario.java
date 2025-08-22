@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,12 +37,19 @@ public class Usuario {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = true, name = "data_vencimento")
+    private LocalDate dataVencimento;
+
     @Enumerated(EnumType.STRING)
     private StatusAluno status;
 
     @CreationTimestamp
     @Column(name = "data_criacao")
     private LocalDateTime dataCriacao;
+
+    @UpdateTimestamp
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
 
     @Column(nullable = false, unique = true)
     private String cpf;

@@ -2,11 +2,15 @@ package br.com.gymorganizer.domain.service;
 
 import br.com.gymorganizer.domain.exception.UsuarioJaAtivoException;
 import br.com.gymorganizer.domain.model.Pagamento;
+import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class CadastroPagamentoService {
@@ -24,13 +28,19 @@ public class CadastroPagamentoService {
             throw new UsuarioJaAtivoException(usuario.getId());
         }
 
+        atualizarStatusUsuario(usuario);
         pagamento.setUsuario(usuario);
-        usuario.setStatus(StatusAluno.ATIVO);
-
-        cadastroUsuarioService.salvar(usuario);
 
         return pagamentoRepository.save(pagamento);
     }
 
+    private void atualizarStatusUsuario(Usuario usuario) {
+        Plano plano = usuario.getPlano();
 
+        usuario.setStatus(StatusAluno.ATIVO);
+
+        usuario.setDataVencimento(LocalDate.now().plusDays(plano.getDuracaoEmDias()));
+
+        cadastroUsuarioService.salvar(usuario);
+    }
 }
