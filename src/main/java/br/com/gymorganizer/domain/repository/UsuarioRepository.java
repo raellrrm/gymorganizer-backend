@@ -11,5 +11,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     boolean existsByCpfAndIdNot(String cpf, Long usuarioId);
     boolean existsByEmailAndIdNot(String email, Long usuarioId);
     List<Usuario> findByStatusIn(List<StatusAluno> statuses);
+    List<Usuario> findByStatus(StatusAluno statusAluno);
     Optional<Usuario> findByCpf(String cpf);
 }

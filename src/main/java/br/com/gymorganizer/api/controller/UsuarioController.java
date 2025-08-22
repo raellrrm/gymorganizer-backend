@@ -2,6 +2,7 @@ package br.com.gymorganizer.api.controller;
 
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
+import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
@@ -54,6 +55,15 @@ public class UsuarioController {
     @GetMapping("/cpf/{cpf}")
     public Usuario buscarPorCpf(@PathVariable String cpf) {
         return cadastroUsuarioService.buscarPorCpf(cpf);
+    }
+
+    /**
+     * GET /status?status={status}
+     * Retorna uma lista de todos os usuários que possuem o status passado o patâmetro
+     */
+    @GetMapping("/status")
+    public List<Usuario> buscarPorStatus(@RequestParam String status) {
+        return usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase()));
     }
 
     /**
