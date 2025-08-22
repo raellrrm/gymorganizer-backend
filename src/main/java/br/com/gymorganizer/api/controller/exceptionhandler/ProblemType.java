@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum ProblemType {
 
+    USUARIO_JA_ATIVO("/usuario-ja-ativo", "Usuário ja ativo"),
     RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado", "Recurso não encontrado"),
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     ATRIBUTO_EM_USO("/atributo-em-uso", "Atributo em uso");

@@ -12,9 +12,20 @@ import java.time.LocalDateTime;
 
 /**
  * Classe responsável por capturar e tratar exceções da aplicação.
+ *
+ * Ocorre ao tentar realizar um pagamento quando o usuário já está com o status de pagamento ativo
  */
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(UsuarioJaAtivoException.class)
+    public ResponseEntity<?> handleUsuarioJaAtivoException(UsuarioJaAtivoException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST; // 400
+        ProblemType type = ProblemType.USUARIO_JA_ATIVO;
+
+        Problem problem = createProblemBuilder(type, ex.getMessage(), status, LocalDateTime.now()).build();
+        return ResponseEntity.status(status).body(problem);
+    }
 
     /**
      * Trata a exceção AtributoEmUsoException.
@@ -61,12 +72,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * Método auxiliar para construir objetos do tipo Problem (corpo do erro).
-     *
-     * @param type      Tipo de problema (enum ProblemType)
-     * @param detail    Mensagem de detalhe do erro
-     * @param status    Código HTTP
-     * @param timestamp Data/hora do erro
-     * @return Builder de Problem preenchido
      */
     public Problem.ProblemBuilder createProblemBuilder(
             ProblemType type, String detail, HttpStatus status, LocalDateTime timestamp) {
