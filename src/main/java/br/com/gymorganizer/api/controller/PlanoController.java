@@ -1,5 +1,7 @@
 package br.com.gymorganizer.api.controller;
 
+import br.com.gymorganizer.api.assembler.plano.PlanoModelAssembler;
+import br.com.gymorganizer.api.controller.model.plano.PlanoModel;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.repository.PlanoRepository;
 import br.com.gymorganizer.domain.service.CadastroPlanoService;
@@ -22,13 +24,16 @@ public class PlanoController {
     @Autowired
     PlanoRepository planoRepository;
 
+    @Autowired
+    PlanoModelAssembler planoModelAssembler;
+
     /**
      * GET /planos
      * Retorna a lista de todos os planos cadastrados
      */
     @GetMapping
-    public List<Plano> todos() {
-        return planoRepository.findAll();
+    public List<PlanoModel> todos() {
+        return planoModelAssembler.toCollectModel(planoRepository.findAll());
     }
 
     /**
@@ -36,8 +41,8 @@ public class PlanoController {
      * Busca um plano específico pelo ID.
      */
     @GetMapping("/{planoId}")
-    public Plano buscar(@PathVariable Long planoId) {
-        return cadastroPlanoService.buscarOuFalhar(planoId);
+    public PlanoModel buscar(@PathVariable Long planoId) {
+        return planoModelAssembler.toModel(cadastroPlanoService.buscarOuFalhar(planoId));
     }
 
     /**
@@ -45,8 +50,8 @@ public class PlanoController {
      * Cria um novo plano
      */
     @PostMapping
-    public Plano adicionar(@RequestBody Plano plano) {
-        return cadastroPlanoService.salvar(plano);
+    public PlanoModel adicionar(@RequestBody Plano plano) {
+        return planoModelAssembler.toModel(cadastroPlanoService.salvar(plano));
     }
 
     /**
@@ -54,13 +59,13 @@ public class PlanoController {
      * Atualiza dados de um plano existente
      */
     @PutMapping("/{planoId}")
-    public Plano atualizar(@RequestBody Plano plano, @PathVariable Long planoId) {
+    public PlanoModel atualizar(@RequestBody Plano plano, @PathVariable Long planoId) {
         Plano planoAtual = cadastroPlanoService.buscarOuFalhar(planoId);
 
         BeanUtils.copyProperties(plano, planoAtual,
                 "id", "dataCriacao");
 
-        return cadastroPlanoService.salvar(planoAtual);
+        return planoModelAssembler.toModel(cadastroPlanoService.salvar(planoAtual));
     }
 
     /**
