@@ -1,6 +1,8 @@
 package br.com.gymorganizer.api.controller;
 
 import br.com.gymorganizer.api.assembler.plano.PlanoModelAssembler;
+import br.com.gymorganizer.api.assembler.plano.PlanoModelDisassembler;
+import br.com.gymorganizer.api.controller.model.plano.PlanoInput;
 import br.com.gymorganizer.api.controller.model.plano.PlanoModel;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.repository.PlanoRepository;
@@ -27,6 +29,9 @@ public class PlanoController {
     @Autowired
     PlanoModelAssembler planoModelAssembler;
 
+    @Autowired
+    PlanoModelDisassembler planoModelDisassembler;
+
     /**
      * GET /planos
      * Retorna a lista de todos os planos cadastrados
@@ -50,7 +55,9 @@ public class PlanoController {
      * Cria um novo plano
      */
     @PostMapping
-    public PlanoModel adicionar(@RequestBody Plano plano) {
+    public PlanoModel adicionar(@RequestBody PlanoInput planoInput) {
+        Plano plano = planoModelDisassembler.toDomainObject(planoInput);
+
         return planoModelAssembler.toModel(cadastroPlanoService.salvar(plano));
     }
 
@@ -59,11 +66,10 @@ public class PlanoController {
      * Atualiza dados de um plano existente
      */
     @PutMapping("/{planoId}")
-    public PlanoModel atualizar(@RequestBody Plano plano, @PathVariable Long planoId) {
+    public PlanoModel atualizar(@RequestBody PlanoInput planoInput, @PathVariable Long planoId) {
         Plano planoAtual = cadastroPlanoService.buscarOuFalhar(planoId);
 
-        BeanUtils.copyProperties(plano, planoAtual,
-                "id", "dataCriacao");
+        planoModelDisassembler.copyToDomainObject(planoInput, planoAtual);
 
         return planoModelAssembler.toModel(cadastroPlanoService.salvar(planoAtual));
     }
