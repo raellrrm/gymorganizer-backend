@@ -15,6 +15,6 @@ public class UsuarioModel {
     private String email;
     private String telefone;
     private String cpf;
-    private StatusAluno Aluno;
+    private StatusAluno statusAluno;
     private PlanoModel plano;
 }

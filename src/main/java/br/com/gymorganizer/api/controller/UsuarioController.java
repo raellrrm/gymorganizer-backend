@@ -1,5 +1,7 @@
 package br.com.gymorganizer.api.controller;
 
+import br.com.gymorganizer.api.assembler.UsuarioModelAssembler;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
@@ -30,13 +32,17 @@ public class UsuarioController {
     @Autowired
     private CadastroPagamentoService cadastroPagamentoService;
 
+    @Autowired
+    private UsuarioModelAssembler usuarioModelAssembler;
+
     /**
      * GET /usuarios
      * Retorna a lista de todos os usuários cadastrados.
      */
     @GetMapping
-    public List<Usuario> listar() {
-        return usuarioRepository.findAll();
+    public List<UsuarioModel> listar() {
+
+        return usuarioModelAssembler.toCollectModel(usuarioRepository.findAll());
     }
 
     /**
@@ -44,8 +50,8 @@ public class UsuarioController {
      * Busca um usuário específico pelo ID.
      */
     @GetMapping("/{usuarioId}")
-    public Usuario buscar(@PathVariable Long usuarioId) {
-        return cadastroUsuarioService.buscarOuFalhar(usuarioId);
+    public UsuarioModel buscar(@PathVariable Long usuarioId) {
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarOuFalhar(usuarioId));
     }
 
     /**
@@ -53,8 +59,8 @@ public class UsuarioController {
      * Busca um usuário específico pelo CPF.
      */
     @GetMapping("/cpf/{cpf}")
-    public Usuario buscarPorCpf(@PathVariable String cpf) {
-        return cadastroUsuarioService.buscarPorCpf(cpf);
+    public UsuarioModel buscarPorCpf(@PathVariable String cpf) {
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarPorCpf(cpf));
     }
 
     /**
@@ -62,8 +68,8 @@ public class UsuarioController {
      * Retorna uma lista de todos os usuários que possuem o status passado o patâmetro
      */
     @GetMapping("/status")
-    public List<Usuario> buscarPorStatus(@RequestParam String status) {
-        return usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase()));
+    public List<UsuarioModel> buscarPorStatus(@RequestParam String status) {
+        return usuarioModelAssembler.toCollectModel(usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase())));
     }
 
     /**
@@ -72,8 +78,9 @@ public class UsuarioController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Usuario adicionar(@RequestBody Usuario usuario) {
-        return cadastroUsuarioService.salvar(usuario);
+    public UsuarioModel adicionar(@RequestBody Usuario usuario) {
+
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuario));
     }
 
     /**
@@ -92,13 +99,13 @@ public class UsuarioController {
      * Atualiza os dados de um usuário existente.
      */
     @PutMapping("/{usuarioId}")
-    public Usuario atualizar(@RequestBody Usuario usuario, @PathVariable Long usuarioId) {
+    public UsuarioModel atualizar(@RequestBody Usuario usuario, @PathVariable Long usuarioId) {
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
         BeanUtils.copyProperties(usuario, usuarioAtual,
                 "id", "dataCriacao", "dataNascimento", "cpf");
 
-        return cadastroUsuarioService.salvar(usuarioAtual);
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuarioAtual));
     }
 
     /**
