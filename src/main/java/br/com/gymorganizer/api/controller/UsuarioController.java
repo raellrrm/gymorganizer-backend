@@ -1,6 +1,8 @@
 package br.com.gymorganizer.api.controller;
 
 import br.com.gymorganizer.api.assembler.UsuarioModelAssembler;
+import br.com.gymorganizer.api.assembler.UsuarioModelDisassembler;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
@@ -34,6 +36,9 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioModelAssembler usuarioModelAssembler;
+
+    @Autowired
+    private UsuarioModelDisassembler usuarioModelDisassembler;
 
     /**
      * GET /usuarios
@@ -78,7 +83,8 @@ public class UsuarioController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UsuarioModel adicionar(@RequestBody Usuario usuario) {
+    public UsuarioModel adicionar(@RequestBody UsuarioInput usuarioInput) {
+        Usuario usuario = usuarioModelDisassembler.toDomainObject(usuarioInput);
 
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuario));
     }
@@ -99,11 +105,10 @@ public class UsuarioController {
      * Atualiza os dados de um usuário existente.
      */
     @PutMapping("/{usuarioId}")
-    public UsuarioModel atualizar(@RequestBody Usuario usuario, @PathVariable Long usuarioId) {
+    public UsuarioModel atualizar(@RequestBody UsuarioInput usuarioInput, @PathVariable Long usuarioId) {
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-        BeanUtils.copyProperties(usuario, usuarioAtual,
-                "id", "dataCriacao", "dataNascimento", "cpf");
+        usuarioModelDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
 
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuarioAtual));
     }
