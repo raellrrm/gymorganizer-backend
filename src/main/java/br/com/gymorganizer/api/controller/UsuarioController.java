@@ -1,7 +1,7 @@
 package br.com.gymorganizer.api.controller;
 
-import br.com.gymorganizer.api.assembler.UsuarioModelAssembler;
-import br.com.gymorganizer.api.assembler.UsuarioModelDisassembler;
+import br.com.gymorganizer.api.assembler.usuario.UsuarioModelAssembler;
+import br.com.gymorganizer.api.assembler.usuario.UsuarioModelDisassembler;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.domain.model.Pagamento;
@@ -11,7 +11,6 @@ import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
