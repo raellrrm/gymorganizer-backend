@@ -24,4 +24,8 @@ public class Pagamento {
 
     @Column(name = "valor_pago", nullable = false)
     private BigDecimal valorPago;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 }
