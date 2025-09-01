@@ -1,4 +1,4 @@
-package br.com.gymorganizer.api.assembler;
+package br.com.gymorganizer.api.assembler.usuario;
 
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.domain.model.Plano;
