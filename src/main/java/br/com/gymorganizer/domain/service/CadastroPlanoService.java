@@ -17,6 +17,12 @@ public class CadastroPlanoService {
         return planoRepository.save(plano);
     }
 
+    public Plano buscarOuFalhar(Long planoId) {
+        return planoRepository.findById(planoId).orElseThrow(
+                () -> new IllegalArgumentException()
+        );
+    }
+
     public void excluir(Long planoId) {
         planoRepository.deleteById(planoId);
     }
