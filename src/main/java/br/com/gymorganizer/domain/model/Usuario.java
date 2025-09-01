@@ -50,4 +50,8 @@ public class Usuario {
 
     @Column(nullable = false, unique = true)
     private String cpf;
+
+    @ManyToOne
+    @JoinColumn(name = "plano_id", nullable = false)
+    private Plano plano;
 }
