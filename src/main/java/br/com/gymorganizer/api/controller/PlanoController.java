@@ -51,14 +51,19 @@ public class PlanoController {
     }
 
     //PUT
-    @PutMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public PlanoModel atualizar(@RequestBody PlanoInput planoInput, @RequestParam Long planoId) {
+    @PutMapping("/{planoId}")
+    public PlanoModel atualizar(@RequestBody PlanoInput planoInput, @PathVariable Long planoId) {
         Plano planoAtual = cadastroPlanoService.buscarOuFalhar(planoId);
 
         planoModelDisassembler.copyToDomainObject(planoInput, planoAtual);
 
-        return planoModelAssembler.toModel(planoAtual);
+        return planoModelAssembler.toModel(cadastroPlanoService.salvar(planoAtual));
     }
 
+    //DELETE
+    @DeleteMapping("/{planoId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable Long planoId) {
+        cadastroPlanoService.excluir(planoId);
+    }
 }

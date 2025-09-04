@@ -24,6 +24,7 @@ public class CadastroPlanoService {
     }
 
     public void excluir(Long planoId) {
-        planoRepository.deleteById(planoId);
+       Plano plano = buscarOuFalhar(planoId);
+       planoRepository.deleteById(plano.getId());
     }
 }

@@ -15,8 +15,19 @@ public class CadastroUsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    public Usuario buscarOuFalhar(Long usuarioId) {
+        return usuarioRepository.findById(usuarioId).orElseThrow(
+                () -> new IllegalArgumentException()
+        );
+    }
+
     public void excluir(Long usuarioId) {
-        usuarioRepository.deleteById(usuarioId);
+        try {
+            Usuario usuario = buscarOuFalhar(usuarioId);
+            usuarioRepository.deleteById(usuario.getId());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException();
+        }
     }
 
 }
