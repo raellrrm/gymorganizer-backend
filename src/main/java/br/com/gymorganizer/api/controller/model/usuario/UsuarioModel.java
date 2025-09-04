@@ -5,6 +5,8 @@ import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Setter
 @Getter
 public class UsuarioModel {
@@ -17,4 +19,5 @@ public class UsuarioModel {
     private String cpf;
     private StatusAluno statusAluno;
     private PlanoModel plano;
+    private LocalDate dataVencimento;
 }
