@@ -1,5 +1,6 @@
 package br.com.gymorganizer.domain.service;
 
+import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,16 @@ public class CadastroUsuarioService {
     @Autowired
     UsuarioRepository usuarioRepository;
 
+    @Autowired
+    CadastroPlanoService cadastroPlanoService;
+
     public Usuario salvar(Usuario usuario) {
+        usuario = verificarEmailECpf(usuario);
+
+        Plano plano = cadastroPlanoService.buscarOuFalhar(usuario.getPlano().getId());
+
+        usuario.setPlano(plano);
+
         return usuarioRepository.save(usuario);
     }
 
@@ -28,6 +38,17 @@ public class CadastroUsuarioService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private Usuario verificarEmailECpf(Usuario usuario) {
+        if(usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), usuario.getId())) {
+            throw new IllegalArgumentException();
+        }
+        if(usuarioRepository.existsByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
+            throw new IllegalArgumentException();
+        }
+
+        return usuario;
     }
 
 }
