@@ -1,11 +1,17 @@
 package br.com.gymorganizer.api.controller;
 
+import br.com.gymorganizer.api.assembler.pagamento.PagamentoModelAssembler;
+import br.com.gymorganizer.api.assembler.pagamento.PagamentoModelDisassembler;
 import br.com.gymorganizer.api.assembler.usuario.UsuarioModelAssembler;
 import br.com.gymorganizer.api.assembler.usuario.UsuarioModelDisassembler;
+import br.com.gymorganizer.api.controller.model.pagamento.PagamentoInput;
+import br.com.gymorganizer.api.controller.model.pagamento.PagamentoModel;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
+import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
+import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +35,15 @@ public class UsuarioController {
     @Autowired
     private UsuarioModelDisassembler usuarioModelDisassembler;
 
+    @Autowired
+    private PagamentoModelAssembler pagamentoModelAssembler;
+
+    @Autowired
+    private PagamentoModelDisassembler pagamentoModelDisassembler;
+
+    @Autowired
+    private CadastroPagamentoService cadastroPagamentoService;
+
     //GET
     @GetMapping
     public List<UsuarioModel> todos() {
@@ -46,6 +61,14 @@ public class UsuarioController {
     public UsuarioModel adicionar(@RequestBody UsuarioInput usuarioInput) {
         Usuario usuario = usuarioModelDisassembler.toDomainObject(usuarioInput);
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuario));
+    }
+
+    //POST
+    @PostMapping("/{usuarioId}/pagar")
+    public PagamentoModel pagar(@RequestBody PagamentoInput pagamentoInput, @PathVariable Long usuarioId) {
+        Pagamento pagamento = pagamentoModelDisassembler.toDomainObject(pagamentoInput);
+
+        return pagamentoModelAssembler.toModel(cadastroPagamentoService.pagar(pagamento, usuarioId));
     }
 
     //PUT
