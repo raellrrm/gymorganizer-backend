@@ -57,10 +57,19 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarOuFalhar(usuarioId));
     }
 
+    //GET
     @GetMapping("/status")
     public List<UsuarioModel> buscarPorStatus(@RequestParam String status) {
         return usuarioModelAssembler.toCollectModel(usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase())));
     }
+
+    //GET
+    @GetMapping("/cpf/{cpfUsuario}")
+    public UsuarioModel buscarPorCpf(@PathVariable String cpfUsuario) {
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarPorCpf(cpfUsuario));
+    }
+
+
 
     //POST
     @PostMapping

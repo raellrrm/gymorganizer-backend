@@ -30,6 +30,12 @@ public class CadastroUsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    public Usuario buscarPorCpf(String cpf) {
+        return usuarioRepository.findByCpf(cpf).orElseThrow((
+                () -> new IllegalArgumentException()
+        ));
+    }
+
     public Usuario buscarOuFalhar(Long usuarioId) {
         return usuarioRepository.findById(usuarioId).orElseThrow(
                 () -> new IllegalArgumentException()
