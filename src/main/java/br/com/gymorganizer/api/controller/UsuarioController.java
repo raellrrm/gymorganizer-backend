@@ -10,6 +10,7 @@ import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
+import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
@@ -54,6 +55,11 @@ public class UsuarioController {
     @GetMapping("/{usuarioId}")
     public UsuarioModel buscar(@PathVariable Long usuarioId) {
         return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarOuFalhar(usuarioId));
+    }
+
+    @GetMapping("/status")
+    public List<UsuarioModel> buscarPorStatus(@RequestParam String status) {
+        return usuarioModelAssembler.toCollectModel(usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase())));
     }
 
     //POST
