@@ -5,6 +5,7 @@ import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.PagamentoRepository;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjuster;
 import java.time.temporal.TemporalAdjusters;
 
+@Service
 public class DashboardService {
 
 
