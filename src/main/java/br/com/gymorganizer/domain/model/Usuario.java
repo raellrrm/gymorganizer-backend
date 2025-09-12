@@ -5,8 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,11 +14,16 @@ import java.util.List;
 @Data
 @EqualsAndHashCode
 @Entity
+@SQLDelete(sql = "UPDATE usuario SET ativo = false WHERE id = ?")
+@SQLRestriction("ativo = true")
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Long id;
+
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     @Column(nullable = false)
     private String nome;
