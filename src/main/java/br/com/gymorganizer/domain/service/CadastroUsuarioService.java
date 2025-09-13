@@ -1,5 +1,9 @@
 package br.com.gymorganizer.domain.service;
 
+import br.com.gymorganizer.domain.exception.CpfEmUsoException;
+import br.com.gymorganizer.domain.exception.CpfNaoEncontradoException;
+import br.com.gymorganizer.domain.exception.EmailEmUsoException;
+import br.com.gymorganizer.domain.exception.UsuarioNaoEncontradoException;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
@@ -10,6 +14,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CadastroUsuarioService {
 
+    public static final String MSG_CPF_EM_USO = "Este CPF já está em uso.";
+    public static final String MSG_EMAIL_EM_USO = "Este e-mail já está em uso.";
     @Autowired
     UsuarioRepository usuarioRepository;
 
@@ -32,31 +38,29 @@ public class CadastroUsuarioService {
 
     public Usuario buscarPorCpf(String cpf) {
         return usuarioRepository.findByCpf(cpf).orElseThrow((
-                () -> new IllegalArgumentException()
+                () -> new CpfNaoEncontradoException(cpf)
         ));
     }
 
     public Usuario buscarOuFalhar(Long usuarioId) {
         return usuarioRepository.findById(usuarioId).orElseThrow(
-                () -> new IllegalArgumentException()
+                () -> new UsuarioNaoEncontradoException(usuarioId)
         );
     }
 
     public void excluir(Long usuarioId) {
-        try {
             Usuario usuario = buscarOuFalhar(usuarioId);
+            usuario.setStatus(StatusAluno.INATIVO);
+            usuario.setDataVencimento(null);
             usuarioRepository.deleteById(usuario.getId());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException();
-        }
     }
 
     private Usuario verificarEmailECpf(Usuario usuario) {
         if(usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), usuario.getId())) {
-            throw new IllegalArgumentException();
+            throw new CpfEmUsoException(MSG_CPF_EM_USO);
         }
         if(usuarioRepository.existsByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
-            throw new IllegalArgumentException();
+            throw new EmailEmUsoException(MSG_EMAIL_EM_USO);
         }
 
         return usuario;

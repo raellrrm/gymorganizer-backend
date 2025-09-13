@@ -1,5 +1,6 @@
 package br.com.gymorganizer.domain.service;
 
+import br.com.gymorganizer.domain.exception.UsuarioAtivoException;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Service
 public class CadastroPagamentoService {
 
+    public static final String MSG_USUARIO_ATIVO = "O usuário id: %d já possui o status 'ativo'";
     @Autowired
     PagamentoRepository pagamentoRepository;
 
@@ -23,7 +25,7 @@ public class CadastroPagamentoService {
         Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
         if (usuario.getStatus() == StatusAluno.ATIVO) {
-            throw new IllegalArgumentException();
+            throw new UsuarioAtivoException(String.format(MSG_USUARIO_ATIVO, usuarioId));
         }
 
         atualizarStatusUsuario(usuario);
