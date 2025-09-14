@@ -8,6 +8,7 @@ import br.com.gymorganizer.api.controller.model.pagamento.PagamentoInput;
 import br.com.gymorganizer.api.controller.model.pagamento.PagamentoModel;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
@@ -88,10 +89,10 @@ public class UsuarioController {
 
     //PUT
     @PutMapping("/{usuarioId}")
-    public UsuarioModel atualizar(@RequestBody UsuarioInput usuarioInput, @PathVariable Long usuarioId) {
+    public UsuarioModel atualizar(@RequestBody UsuarioUpdateInput usuarioUpdateInput, @PathVariable Long usuarioId) {
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
-        usuarioModelDisassembler.copyToDomainObject(usuarioInput, usuarioAtual);
+        usuarioModelDisassembler.copyToDomainObject(usuarioUpdateInput, usuarioAtual);
 
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuarioAtual));
     }

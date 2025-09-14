@@ -1,6 +1,7 @@
 package br.com.gymorganizer.api.assembler.usuario;
 
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import org.modelmapper.ModelMapper;
@@ -17,9 +18,8 @@ public class UsuarioModelDisassembler {
         return modelMapper.map(usuarioInput, Usuario.class);
     }
 
-    public void copyToDomainObject(UsuarioInput usuarioInput, Usuario usuario) {
-        usuario.setPlano(new Plano());
 
-        modelMapper.map(usuarioInput, usuario);
+    public void copyToDomainObject(UsuarioUpdateInput usuarioUpdateInput, Usuario usuario) {
+        modelMapper.map(usuarioUpdateInput, usuario);
     }
 }
