@@ -1,13 +1,19 @@
 package br.com.gymorganizer.domain.service;
 
 import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
 import br.com.gymorganizer.domain.exception.*;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.Field;
+import java.util.Map;
 
 @Service
 public class CadastroUsuarioService {
@@ -71,6 +77,30 @@ public class CadastroUsuarioService {
         usuario.setPlano(plano);
 
         return usuarioRepository.save(usuario);
+    }
+
+    public Usuario alterarParcial(Map<String, Object> fields, Long usuarioId) {
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        merge(fields, usuario);
+
+        return salvar(usuario);
+    }
+
+    private void merge(Map<String, Object> fields, Usuario usuarioDestino) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        UsuarioUpdateInput usuarioConvert = objectMapper.convertValue(fields, UsuarioUpdateInput.class);
+
+        fields.forEach((propertyName, propertyValue) -> {
+            Field field = ReflectionUtils.findField(Usuario.class, propertyName);
+            Field sourceField = ReflectionUtils.findField(UsuarioUpdateInput.class, propertyName);
+
+            field.setAccessible(true);
+            sourceField.setAccessible(true);
+
+            Object newValue = ReflectionUtils.getField(sourceField, usuarioConvert);
+
+            ReflectionUtils.setField(field, usuarioDestino, newValue);
+        });
     }
 
     private Usuario verificarEmailECpf(Usuario usuario) {

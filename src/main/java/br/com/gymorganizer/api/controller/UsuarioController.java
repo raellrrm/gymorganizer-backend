@@ -105,6 +105,13 @@ public class UsuarioController {
         return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarPlano(planoUpdateInput, usuarioId));
     }
 
+    //PATCH
+    @PatchMapping("/{usuarioId}")
+    public UsuarioModel atualizarParcial(@RequestBody Map<String, Object> fields,
+                                         @PathVariable Long usuarioId) {
+
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarParcial(fields, usuarioId));
+    }
 
     //DELETE
     @DeleteMapping("/{usuarioId}")
