@@ -1,9 +1,7 @@
 package br.com.gymorganizer.domain.service;
 
-import br.com.gymorganizer.domain.exception.CpfEmUsoException;
-import br.com.gymorganizer.domain.exception.CpfNaoEncontradoException;
-import br.com.gymorganizer.domain.exception.EmailEmUsoException;
-import br.com.gymorganizer.domain.exception.UsuarioNaoEncontradoException;
+import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
+import br.com.gymorganizer.domain.exception.*;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
@@ -16,6 +14,8 @@ public class CadastroUsuarioService {
 
     public static final String MSG_CPF_EM_USO = "Este CPF já está em uso.";
     public static final String MSG_EMAIL_EM_USO = "Este e-mail já está em uso.";
+    public static final String MSG_ERRO_ATUALIZAR_PLANO_STATUS_COMO_ATIVO = "Não é possível alterar o plano de um usuário ativo. A alteração deve ser feita quando o ciclo de pagamento atual terminar e o status for 'PENDENTE'.";
+    public static final String MSG_JA_ESTA_VINCULADO_AO_PLANO = "O usuário já está vinculado a este plano";
     @Autowired
     UsuarioRepository usuarioRepository;
 
@@ -29,7 +29,7 @@ public class CadastroUsuarioService {
 
         usuario.setPlano(plano);
 
-        if(usuario.getId() == null) {
+        if (usuario.getId() == null) {
             usuario.setStatus(StatusAluno.PENDENTE);
         }
 
@@ -49,17 +49,35 @@ public class CadastroUsuarioService {
     }
 
     public void excluir(Long usuarioId) {
-            Usuario usuario = buscarOuFalhar(usuarioId);
-            usuario.setStatus(StatusAluno.INATIVO);
-            usuario.setDataVencimento(null);
-            usuarioRepository.deleteById(usuario.getId());
+        Usuario usuario = buscarOuFalhar(usuarioId);
+        usuario.setStatus(StatusAluno.INATIVO);
+        usuario.setDataVencimento(null);
+        usuarioRepository.deleteById(usuario.getId());
+    }
+
+    public Usuario alterarPlano(PlanoUpdateInput planoUpdateInput, Long usuarioId) {
+        Long planoId = planoUpdateInput.getPlano();
+        Plano plano = cadastroPlanoService.buscarOuFalhar(planoId);
+        Usuario usuario = buscarOuFalhar(usuarioId);
+
+        if (plano.getNome().equals(usuario.getPlano().getNome())) {
+            throw new NegocioException(MSG_JA_ESTA_VINCULADO_AO_PLANO);
+        }
+
+        if (usuario.getStatus().equals(StatusAluno.ATIVO)) {
+            throw new NegocioException(MSG_ERRO_ATUALIZAR_PLANO_STATUS_COMO_ATIVO);
+        }
+
+        usuario.setPlano(plano);
+
+        return usuarioRepository.save(usuario);
     }
 
     private Usuario verificarEmailECpf(Usuario usuario) {
-        if(usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), usuario.getId())) {
+        if (usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), usuario.getId())) {
             throw new CpfEmUsoException(MSG_CPF_EM_USO);
         }
-        if(usuarioRepository.existsByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
+        if (usuarioRepository.existsByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
             throw new EmailEmUsoException(MSG_EMAIL_EM_USO);
         }
 

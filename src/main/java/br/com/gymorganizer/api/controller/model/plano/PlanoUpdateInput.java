@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 public class PlanoUpdateInput {
 
-    private PlanoIdInput plano;
+    private Long plano;
 }

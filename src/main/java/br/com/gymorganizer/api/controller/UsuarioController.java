@@ -6,6 +6,7 @@ import br.com.gymorganizer.api.assembler.usuario.UsuarioModelAssembler;
 import br.com.gymorganizer.api.assembler.usuario.UsuarioModelDisassembler;
 import br.com.gymorganizer.api.controller.model.pagamento.PagamentoInput;
 import br.com.gymorganizer.api.controller.model.pagamento.PagamentoModel;
+import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -80,8 +82,8 @@ public class UsuarioController {
     }
 
     //POST
-    @PostMapping("/{usuarioId}/pagar")
-    public PagamentoModel pagar(@RequestBody PagamentoInput pagamentoInput, @PathVariable Long usuarioId) {
+    @PostMapping("/{usuarioId}/pagamento")
+    public PagamentoModel pagamento(@RequestBody PagamentoInput pagamentoInput, @PathVariable Long usuarioId) {
         Pagamento pagamento = pagamentoModelDisassembler.toDomainObject(pagamentoInput);
 
         return pagamentoModelAssembler.toModel(cadastroPagamentoService.pagar(pagamento, usuarioId));
@@ -96,6 +98,13 @@ public class UsuarioController {
 
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuarioAtual));
     }
+
+    //PUT
+    @PutMapping("/{usuarioId}/plano")
+    public UsuarioModel atualizarPlano(@RequestBody PlanoUpdateInput planoUpdateInput, @PathVariable Long usuarioId) {
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarPlano(planoUpdateInput, usuarioId));
+    }
+
 
     //DELETE
     @DeleteMapping("/{usuarioId}")
