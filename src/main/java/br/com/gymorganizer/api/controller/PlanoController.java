@@ -8,6 +8,7 @@ import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.repository.PlanoRepository;
 import br.com.gymorganizer.domain.service.CadastroPlanoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class PlanoController {
     //POST
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public PlanoModel adicionar(@RequestBody PlanoInput planoInput) {
+    public PlanoModel adicionar(@RequestBody @Valid PlanoInput planoInput) {
         Plano plano = planoModelDisassembler.toDomainObject(planoInput);
         return planoModelAssembler.toModel(cadastroPlanoService.salvar(plano));
     }
