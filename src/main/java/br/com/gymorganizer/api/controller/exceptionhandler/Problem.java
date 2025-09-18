@@ -14,5 +14,12 @@ public class Problem {
     private String type;
     private String title;
     private String detail;
+    private List<Field> fields;
 
+    @Builder
+    @Getter
+    public static class Field {
+        private String name;
+        private String userMessage;
+    }
 }

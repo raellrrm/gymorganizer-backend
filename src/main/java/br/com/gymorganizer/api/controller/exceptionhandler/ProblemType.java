@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ProblemType {
 
     USUARIO_JA_ATIVO("/usuario-ja-ativo", "Usuário já ativo"),
+    DADOS_INVALIDOS("/dados-invalidos","Dados inválidos"),
     RECURSO_NAO_ENCONTRADO("/recurso-nao-encontrado", "Recurso não encontrado"),
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "mensagem incompreensível"),
