@@ -10,6 +10,7 @@ public enum ProblemType {
     ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso"),
     MENSAGEM_INCOMPREENSIVEL("/mensagem-incompreensivel", "mensagem incompreensível"),
     PARAMETRO_INVALIDO("/parametro-invalido", "parâmetro inválido"),
+    ERRO_DE_SISTEMA("/erro-de-sistema", "Erro de sistema"),
     ATRIBUTO_EM_USO("/atributo-em-uso", "Atributo em uso"),
     ERRO_DE_NEGOCIO("/erro-de-negocio", "Erro de negocio");
 

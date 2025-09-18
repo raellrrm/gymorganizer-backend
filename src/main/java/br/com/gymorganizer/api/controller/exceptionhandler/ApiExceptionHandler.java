@@ -25,6 +25,23 @@ import java.util.stream.Collectors;
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
+     * 500 - Captura qualquer exceção não tratada e retorna um erro genérico.
+     */
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ProblemType type = ProblemType.ERRO_DE_SISTEMA;
+
+        String detail = "Ocorreu um erro interno inesperado no sistema. "
+                + "Tente novamente mais tarde e, se o problema persistir, "
+                + "entre em contato com o administrador do sistema.";
+
+        Problem problem = createProblemBuilder(type, detail, status, LocalDateTime.now()).build();
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    /**
      * 404 - Recurso nao encontrado
      */
     @Override
