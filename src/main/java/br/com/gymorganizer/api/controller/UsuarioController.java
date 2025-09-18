@@ -16,6 +16,7 @@ import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -73,16 +74,17 @@ public class UsuarioController {
     }
 
 
-
     //POST
     @PostMapping
-    public UsuarioModel adicionar(@RequestBody UsuarioInput usuarioInput) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public UsuarioModel adicionar(@RequestBody @Valid UsuarioInput usuarioInput) {
         Usuario usuario = usuarioModelDisassembler.toDomainObject(usuarioInput);
         return usuarioModelAssembler.toModel(cadastroUsuarioService.salvar(usuario));
     }
 
     //POST
     @PostMapping("/{usuarioId}/pagamento")
+    @ResponseStatus(HttpStatus.CREATED)
     public PagamentoModel pagamento(@RequestBody PagamentoInput pagamentoInput, @PathVariable Long usuarioId) {
         Pagamento pagamento = pagamentoModelDisassembler.toDomainObject(pagamentoInput);
 
