@@ -4,6 +4,7 @@ CREATE TABLE plano (
     nome VARCHAR(255) NOT NULL,
     valor DECIMAL(10, 2) NOT NULL,
     duracao_em_dias INT NOT NULL,
+    data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -20,12 +21,9 @@ CREATE TABLE usuario (
     ativo BOOLEAN NOT NULL DEFAULT TRUE,
     data_vencimento DATE,
     plano_id BIGINT NOT NULL,
-    -- Datas de auditoria automáticas pelo banco de dados
     data_criacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-
-    -- Constraints nomeadas para fácil identificação
     CONSTRAINT uk_usuario_email UNIQUE (email),
     CONSTRAINT uk_usuario_cpf UNIQUE (cpf),
     CONSTRAINT fk_usuario_plano FOREIGN KEY (plano_id) REFERENCES plano (id)
@@ -34,12 +32,10 @@ CREATE TABLE usuario (
 -- Tabela de Pagamentos
 CREATE TABLE pagamento (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    -- Chave estrangeira agora é NOT NULL para garantir integridade
     usuario_id BIGINT NOT NULL,
     valor_pago DECIMAL(10, 2) NOT NULL,
     data_pagamento TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
-
-    -- Constraint nomeada
     CONSTRAINT fk_pagamento_usuario FOREIGN KEY (usuario_id) REFERENCES usuario (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
