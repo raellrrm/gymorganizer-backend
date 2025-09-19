@@ -36,6 +36,35 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
 
     /**
+     * 400 - Erro de bean validation no método patch.
+     */
+    @ExceptionHandler(ValidatorException.class)
+    public ResponseEntity<Object> handleValidatorException(ValidatorException ex, WebRequest request) {
+
+        BindingResult bindingResult = ex.getBindingResult();
+
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        ProblemType type = ProblemType.DADOS_INVALIDOS;
+        String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
+
+        List<Problem.Field> fields = bindingResult.getFieldErrors()
+                .stream()
+                .map(fieldError -> {
+                    String messageError = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());
+
+                    return Problem.Field.builder()
+                            .name(fieldError.getField())
+                            .userMessage(messageError)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        Problem problem = createProblemBuilder(type,detail, status, LocalDateTime.now()).fields(fields).build();
+
+        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+    }
+
+    /**
      * 400 - Erro de bean validation.
      */
     @Override

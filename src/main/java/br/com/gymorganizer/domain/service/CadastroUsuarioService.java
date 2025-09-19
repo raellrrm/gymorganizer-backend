@@ -2,15 +2,23 @@ package br.com.gymorganizer.domain.service;
 
 import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdatePatchInput;
 import br.com.gymorganizer.domain.exception.*;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.SmartValidator;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -79,28 +87,39 @@ public class CadastroUsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    public Usuario alterarParcial(Map<String, Object> fields, Long usuarioId) {
+    public Usuario alterarParcial(UsuarioUpdatePatchInput patchInput, Long usuarioId) {
         Usuario usuario = buscarOuFalhar(usuarioId);
-        merge(fields, usuario);
+
+        if (patchInput.getNome() != null) {
+            if (patchInput.getNome().isBlank()) {
+                throw new NegocioException("Nome não pode ser vazio");
+            }
+            usuario.setNome(patchInput.getNome());
+        }
+
+        if (patchInput.getSobrenome() != null) {
+            if (patchInput.getSobrenome().isBlank()) {
+                throw new NegocioException("Sobrenome não pode ser vazio");
+            }
+            usuario.setSobrenome(patchInput.getSobrenome());
+        }
+
+        if (patchInput.getTelefone() != null) {
+            if (patchInput.getTelefone().isBlank()) {
+                throw new NegocioException("Telefone não pode ser vazio");
+            }
+            usuario.setTelefone(patchInput.getTelefone());
+        }
+
+        if (patchInput.getEmail() != null) {
+            if (patchInput.getEmail().isBlank()) {
+                throw new NegocioException("Email não pode ser vazio");
+            }
+            usuario.setEmail(patchInput.getEmail());
+        }
+
 
         return salvar(usuario);
-    }
-
-    private void merge(Map<String, Object> fields, Usuario usuarioDestino) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        UsuarioUpdateInput usuarioConvert = objectMapper.convertValue(fields, UsuarioUpdateInput.class);
-
-        fields.forEach((propertyName, propertyValue) -> {
-            Field field = ReflectionUtils.findField(Usuario.class, propertyName);
-            Field sourceField = ReflectionUtils.findField(UsuarioUpdateInput.class, propertyName);
-
-            field.setAccessible(true);
-            sourceField.setAccessible(true);
-
-            Object newValue = ReflectionUtils.getField(sourceField, usuarioConvert);
-
-            ReflectionUtils.setField(field, usuarioDestino, newValue);
-        });
     }
 
     private Usuario verificarEmailECpf(Usuario usuario) {

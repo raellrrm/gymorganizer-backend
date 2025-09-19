@@ -1,5 +1,6 @@
 package br.com.gymorganizer.api.controller.exceptionhandler;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,6 +15,8 @@ public class Problem {
     private String type;
     private String title;
     private String detail;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private List<Field> fields;
 
     @Builder

@@ -10,12 +10,14 @@ import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioModel;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
+import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdatePatchInput;
 import br.com.gymorganizer.domain.model.Pagamento;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
 import br.com.gymorganizer.domain.service.CadastroPagamentoService;
 import br.com.gymorganizer.domain.service.CadastroUsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,7 +95,7 @@ public class UsuarioController {
 
     //PUT
     @PutMapping("/{usuarioId}")
-    public UsuarioModel atualizar(@RequestBody UsuarioUpdateInput usuarioUpdateInput, @PathVariable Long usuarioId) {
+    public UsuarioModel atualizar(@RequestBody @Valid UsuarioUpdateInput usuarioUpdateInput, @PathVariable Long usuarioId) {
         Usuario usuarioAtual = cadastroUsuarioService.buscarOuFalhar(usuarioId);
 
         usuarioModelDisassembler.copyToDomainObject(usuarioUpdateInput, usuarioAtual);
@@ -109,10 +111,10 @@ public class UsuarioController {
 
     //PATCH
     @PatchMapping("/{usuarioId}")
-    public UsuarioModel atualizarParcial(@RequestBody Map<String, Object> fields,
+    public UsuarioModel atualizarParcial(@RequestBody  @Valid UsuarioUpdatePatchInput usuarioUpdatePatchInput,
                                          @PathVariable Long usuarioId) {
 
-        return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarParcial(fields, usuarioId));
+        return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarParcial(usuarioUpdatePatchInput, usuarioId));
     }
 
     //DELETE
