@@ -105,7 +105,7 @@ public class UsuarioController {
 
     //PUT
     @PutMapping("/{usuarioId}/plano")
-    public UsuarioModel atualizarPlano(@RequestBody PlanoUpdateInput planoUpdateInput, @PathVariable Long usuarioId) {
+    public UsuarioModel atualizarPlano(@RequestBody @Valid PlanoUpdateInput planoUpdateInput, @PathVariable Long usuarioId) {
         return usuarioModelAssembler.toModel(cadastroUsuarioService.alterarPlano(planoUpdateInput, usuarioId));
     }
 

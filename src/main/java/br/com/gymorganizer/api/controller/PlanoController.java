@@ -53,7 +53,7 @@ public class PlanoController {
 
     //PUT
     @PutMapping("/{planoId}")
-    public PlanoModel atualizar(@RequestBody PlanoInput planoInput, @PathVariable Long planoId) {
+    public PlanoModel atualizar(@RequestBody @Valid PlanoInput planoInput, @PathVariable Long planoId) {
         Plano planoAtual = cadastroPlanoService.buscarOuFalhar(planoId);
 
         planoModelDisassembler.copyToDomainObject(planoInput, planoAtual);
