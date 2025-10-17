@@ -13,5 +13,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     List<Usuario> findByStatusIn(List<StatusAluno> statuses);
     List<Usuario> findByStatus(StatusAluno statusAluno);
     Optional<Usuario> findByCpf(String cpf);
+    List<Usuario> findByCpfAndStatus(String cpf, StatusAluno status);
     Long countByStatus(StatusAluno statusAluno);
 }

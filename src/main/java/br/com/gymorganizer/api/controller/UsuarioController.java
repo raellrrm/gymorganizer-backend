@@ -53,8 +53,15 @@ public class UsuarioController {
 
     //GET
     @GetMapping
-    public List<UsuarioModel> todos() {
-        return usuarioModelAssembler.toCollectModel(usuarioRepository.findAll());
+    public List<UsuarioModel> todos(@RequestParam(required = false) String cpf, @RequestParam(required = false) String status) {
+
+        StatusAluno statusEnum = null;
+
+        if(status != null && !status.trim().isEmpty()) {
+            statusEnum = StatusAluno.valueOf(status.toUpperCase());
+        }
+        List<Usuario> usuarios = cadastroUsuarioService.todos(cpf, statusEnum);
+        return usuarioModelAssembler.toCollectModel(usuarios);
     }
 
     //GET
@@ -62,19 +69,6 @@ public class UsuarioController {
     public UsuarioModel buscar(@PathVariable Long usuarioId) {
         return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarOuFalhar(usuarioId));
     }
-
-    //GET
-    @GetMapping("/status")
-    public List<UsuarioModel> buscarPorStatus(@RequestParam String status) {
-        return usuarioModelAssembler.toCollectModel(usuarioRepository.findByStatus(StatusAluno.valueOf(status.toUpperCase())));
-    }
-
-    //GET
-    @GetMapping("/cpf/{cpfUsuario}")
-    public UsuarioModel buscarPorCpf(@PathVariable String cpfUsuario) {
-        return usuarioModelAssembler.toModel(cadastroUsuarioService.buscarPorCpf(cpfUsuario));
-    }
-
 
     //POST
     @PostMapping

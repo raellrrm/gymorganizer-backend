@@ -17,10 +17,13 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -48,6 +51,27 @@ public class CadastroUsuarioService {
         }
 
         return usuarioRepository.save(usuario);
+    }
+
+    public List<Usuario> todos(String cpf, StatusAluno status) {
+        boolean temCpf = StringUtils.hasText(cpf);
+        boolean temStatus = status != null;
+
+        if (temCpf && temStatus) {
+            return usuarioRepository.findByCpfAndStatus(cpf, status);
+        }
+
+        if (temCpf) {
+            return usuarioRepository.findByCpf(cpf)
+                    .map(Collections::singletonList)
+                    .orElse(Collections.emptyList());
+        }
+
+        if (temStatus) {
+            return usuarioRepository.findByStatus(status);
+        }
+
+        return usuarioRepository.findAll();
     }
 
     public Usuario buscarPorCpf(String cpf) {
