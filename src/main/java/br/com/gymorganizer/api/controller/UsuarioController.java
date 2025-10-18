@@ -81,10 +81,8 @@ public class UsuarioController {
     //POST
     @PostMapping("/{usuarioId}/pagamento")
     @ResponseStatus(HttpStatus.CREATED)
-    public PagamentoModel pagamento(@RequestBody PagamentoInput pagamentoInput, @PathVariable Long usuarioId) {
-        Pagamento pagamento = pagamentoModelDisassembler.toDomainObject(pagamentoInput);
-
-        return pagamentoModelAssembler.toModel(cadastroPagamentoService.pagar(pagamento, usuarioId));
+    public PagamentoModel pagamento(@PathVariable Long usuarioId) {
+        return pagamentoModelAssembler.toModel(cadastroPagamentoService.pagar(usuarioId));
     }
 
     //PUT

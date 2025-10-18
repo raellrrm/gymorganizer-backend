@@ -9,6 +9,7 @@ import br.com.gymorganizer.domain.repository.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Service
@@ -16,13 +17,21 @@ public class CadastroPagamentoService {
 
     public static final String MSG_USUARIO_ATIVO = "O usuário id: %d já possui o status 'ativo'";
     @Autowired
-    PagamentoRepository pagamentoRepository;
+    private PagamentoRepository pagamentoRepository;
 
     @Autowired
-    CadastroUsuarioService cadastroUsuarioService;
+    private CadastroUsuarioService cadastroUsuarioService;
 
-    public Pagamento pagar(Pagamento pagamento, Long usuarioId) {
+    @Autowired
+    private CadastroPlanoService cadastroPlanoService;
+
+    public Pagamento pagar(Long usuarioId) {
         Usuario usuario = cadastroUsuarioService.buscarOuFalhar(usuarioId);
+        Plano plano = cadastroPlanoService.buscarOuFalhar(usuario.getPlano().getId());
+        BigDecimal valorPlano = plano.getValor();
+
+        Pagamento pagamento = new Pagamento();
+        pagamento.setValorPago(valorPlano);
 
         if (usuario.getStatus() == StatusAluno.ATIVO) {
             throw new UsuarioAtivoException(String.format(MSG_USUARIO_ATIVO, usuarioId));
