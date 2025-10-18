@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Setter
 @Getter
@@ -20,4 +21,5 @@ public class UsuarioModel {
     private StatusAluno statusAluno;
     private PlanoModel plano;
     private LocalDate dataVencimento;
+    private LocalDateTime dataCriacao;
 }
