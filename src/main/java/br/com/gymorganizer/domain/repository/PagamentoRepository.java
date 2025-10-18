@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
@@ -14,4 +15,6 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
     @Query("SELECT SUM(p.valorPago) FROM Pagamento p WHERE p.dataPagamento BETWEEN :inicio AND :fim")
     Optional<BigDecimal> sumValorPagoByDataPagamentoBetween(@Param("inicio") LocalDateTime inicio,
                                                             @Param("fim") LocalDateTime fim);
+
+    List<Pagamento> findByUsuarioId(Long usuarioId);
 }

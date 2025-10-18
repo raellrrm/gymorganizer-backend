@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Relatório de Pagamentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            margin: 0;
+            color: #0056b3;
+        }
+        .user-info {
+            margin-bottom: 20px;
+        }
+        .user-info span {
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>GymOrganizer</h1>
+    <p>Extrato de Pagamentos</p>
+</div>
+
+<div class="user-info">
+    <p><span>Aluno:</span> <span th:text="${usuario.nome} + ' ' + ${usuario.sobrenome}">Nome do Aluno</span></p>
+    <p><span>CPF:</span> <span th:text="${usuario.cpf}">000.000.000-00</span></p>
+</div>
+
+<h3>Histórico de Pagamentos</h3>
+<table>
+    <thead>
+    <tr>
+        <th>ID Pagamento</th>
+        <th>Data do Pagamento</th>
+        <th>Valor Pago (R$)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pagamento : ${pagamentos}">
+        <td th:text="${pagamento.id}">1</td>
+        <td th:text="${#temporals.format(pagamento.dataPagamento, 'dd/MM/yyyy HH:mm')}">01/10/2025 10:30</td>
+        <td th:text="${#numbers.formatDecimal(pagamento.valorPago, 1, 'POINT', 2, 'COMMA')}">99,90</td>
+    </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <p>Relatório gerado em: <span th:text="${#temporals.format(dataGeracao, 'dd/MM/yyyy HH:mm')}">Data Atual</span></p>
+    <p>Sistema GymOrganizer</p>
+</div>
+
+</body>
+</html>
