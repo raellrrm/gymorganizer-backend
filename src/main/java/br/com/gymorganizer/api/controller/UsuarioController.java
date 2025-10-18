@@ -115,6 +115,6 @@ public class UsuarioController {
     @DeleteMapping("/{usuarioId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void remover(@PathVariable Long usuarioId) {
-        cadastroUsuarioService.excluir(usuarioId);
+        cadastroUsuarioService.inativar(usuarioId);
     }
 }

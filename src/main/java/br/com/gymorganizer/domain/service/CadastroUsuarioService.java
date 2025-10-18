@@ -1,30 +1,19 @@
 package br.com.gymorganizer.domain.service;
 
 import br.com.gymorganizer.api.controller.model.plano.PlanoUpdateInput;
-import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdateInput;
 import br.com.gymorganizer.api.controller.model.usuario.UsuarioUpdatePatchInput;
 import br.com.gymorganizer.domain.exception.*;
 import br.com.gymorganizer.domain.model.Plano;
 import br.com.gymorganizer.domain.model.Usuario;
 import br.com.gymorganizer.domain.model.enums.StatusAluno;
 import br.com.gymorganizer.domain.repository.UsuarioRepository;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ReflectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.validation.SmartValidator;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class CadastroUsuarioService {
@@ -39,8 +28,9 @@ public class CadastroUsuarioService {
     @Autowired
     CadastroPlanoService cadastroPlanoService;
 
+    @Transactional
     public Usuario salvar(Usuario usuario) {
-        usuario = verificarEmailECpf(usuario);
+        verificarEmailECpf(usuario);
 
         Plano plano = cadastroPlanoService.buscarOuFalhar(usuario.getPlano().getId());
 
@@ -86,13 +76,16 @@ public class CadastroUsuarioService {
         );
     }
 
-    public void excluir(Long usuarioId) {
+    @Transactional
+    public void inativar(Long usuarioId) {
         Usuario usuario = buscarOuFalhar(usuarioId);
         usuario.setStatus(StatusAluno.INATIVO);
         usuario.setDataVencimento(null);
+
         usuarioRepository.deleteById(usuario.getId());
     }
 
+    @Transactional
     public Usuario alterarPlano(PlanoUpdateInput planoUpdateInput, Long usuarioId) {
         Long planoId = planoUpdateInput.getPlano();
         Plano plano = cadastroPlanoService.buscarOuFalhar(planoId);
@@ -111,6 +104,7 @@ public class CadastroUsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    @Transactional
     public Usuario alterarParcial(UsuarioUpdatePatchInput patchInput, Long usuarioId) {
         Usuario usuario = buscarOuFalhar(usuarioId);
 
@@ -142,19 +136,17 @@ public class CadastroUsuarioService {
             usuario.setEmail(patchInput.getEmail());
         }
 
-
         return salvar(usuario);
     }
 
-    private Usuario verificarEmailECpf(Usuario usuario) {
-        if (usuarioRepository.existsByCpfAndIdNot(usuario.getCpf(), usuario.getId())) {
+    private void verificarEmailECpf(Usuario usuario) {
+        if (usuarioRepository.existsByCpfUnfiltered(usuario.getCpf(), usuario.getId()) > 0) {
             throw new CpfEmUsoException(MSG_CPF_EM_USO);
         }
-        if (usuarioRepository.existsByEmailAndIdNot(usuario.getEmail(), usuario.getId())) {
+
+        if (usuarioRepository.existsByEmailUnfiltered(usuario.getEmail(), usuario.getId()) > 0) {
             throw new EmailEmUsoException(MSG_EMAIL_EM_USO);
         }
-
-        return usuario;
     }
-
 }
+
